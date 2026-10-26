@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>ניהול אישורי הגעה</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--plum:#3a1f3d;--rose:#e8b4bf;--rose-soft:#f7e3e7;--gold:#c9a35b;--cream:#fcf7f1;--ink:#2b1a2d;--muted:#7a6a7c;--green:#2e7d4f;--red:#b3261e;--amber:#b7791f}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Heebo',system-ui,sans-serif;background:var(--cream);color:var(--ink)}
+.hidden{display:none!important}
+button{font:inherit;cursor:pointer}
+.login{min-height:100vh;display:grid;place-items:center;padding:16px}
+.login form{background:#fff;padding:36px;border-radius:24px;box-shadow:0 18px 50px -20px rgba(58,31,61,.4);width:min(380px,100%);text-align:center}
+.login h1{margin:0 0 6px;color:var(--plum)}
+.login p{color:var(--muted);margin:0 0 20px}
+input,select{font:inherit;padding:12px 14px;border:2px solid #eadde0;border-radius:12px;width:100%;background:#fff}
+input:focus,select:focus{outline:none;border-color:var(--gold)}
+.btn{background:var(--plum);color:#fff;border:0;padding:12px 22px;border-radius:12px;font-weight:500}
+.btn:hover{opacity:.9}
+.btn.ghost{background:#fff;color:var(--plum);border:2px solid var(--rose)}
+.btn.gold{background:var(--gold);color:var(--plum)}
+.err{color:var(--red);min-height:1.4em;margin:10px 0 0}
+header.top{background:var(--plum);color:#fff;padding:16px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header.top h1{margin:0;font-size:1.3rem;flex:1}
+header.top .btn{padding:9px 16px}
+main{width:min(1100px,100% - 24px);margin:22px auto 60px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.stat{background:#fff;border-radius:18px;padding:18px;box-shadow:0 8px 24px -14px rgba(58,31,61,.4);border-top:4px solid var(--rose)}
+.stat b{display:block;font-size:2.2rem;line-height:1.1;color:var(--plum)}
+.stat span{color:var(--muted);font-size:.95rem}
+.stat.yes{border-color:var(--green)}.stat.maybe{border-color:var(--amber)}.stat.no{border-color:var(--red)}.stat.main{border-color:var(--gold)}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.tools input{flex:1;min-width:180px}.tools select{width:auto}
+.list{display:grid;gap:10px}
+.row{background:#fff;border-radius:16px;padding:14px 18px;display:grid;grid-template-columns:1.4fr 1fr auto auto;gap:12px;align-items:center;box-shadow:0 6px 20px -14px rgba(58,31,61,.45);border-right:5px solid var(--rose)}
+.row.yes{border-color:var(--green)}.row.maybe{border-color:var(--amber)}.row.no{border-color:var(--red)}
+.row .name{font-weight:700;font-size:1.1rem}
+.row .meta{color:var(--muted);font-size:.9rem}
+.row .note{grid-column:1/-1;background:var(--rose-soft);border-radius:10px;padding:8px 12px;font-size:.95rem}
+.badge{display:inline-block;padding:3px 12px;border-radius:999px;font-size:.85rem;font-weight:500;color:#fff}
+.badge.yes{background:var(--green)}.badge.maybe{background:var(--amber)}.badge.no{background:var(--red)}
+.new{background:var(--gold);color:var(--plum);padding:2px 9px;border-radius:999px;font-size:.75rem;font-weight:700;margin-inline-start:8px}
+.acts{display:flex;gap:6px}
+.icon{width:38px;height:38px;border-radius:10px;border:2px solid #eadde0;background:#fff;text-decoration:none;display:grid;place-items:center;font-size:1.05rem}
+.icon:hover{border-color:var(--gold)}
+.icon.del:hover{border-color:var(--red)}
+.guests{font-size:1.4rem;font-weight:700;color:var(--plum);text-align:center;min-width:56px}
+.guests small{display:block;font-size:.7rem;color:var(--muted);font-weight:400}
+.empty{text-align:center;color:var(--muted);padding:50px 10px;background:#fff;border-radius:16px}
+@media(max-width:700px){.row{grid-template-columns:1fr auto}.row .guests{text-align:start}}
+</style>
+</head>
+<body>
+
+<section class="login" id="login">
+  <form id="loginForm">
+    <h1>🌸 ניהול אישורי הגעה</h1>
+    <p>הבת מצווה של מיכל</p>
+    <input type="password" id="pw" placeholder="סיסמה" autocomplete="current-password" required autofocus>
+    <p class="err" id="loginErr"></p>
+    <button class="btn" style="width:100%">כניסה</button>
+  </form>
+</section>
+
+<div id="app" class="hidden">
+  <header class="top">
+    <h1>🌸 אישורי הגעה · בת מצווה מיכל</h1>
+    <button class="btn gold" id="refresh">רענון</button>
+    <a class="btn ghost" href="/api/admin/export.csv" style="text-decoration:none">⬇️ ייצוא ל-Excel</a>
+    <button class="btn ghost" id="logout">יציאה</button>
+  </header>
+  <main>
+    <div class="stats" id="stats"></div>
+    <div class="tools">
+      <input type="search" id="q" placeholder="חיפוש לפי שם, טלפון או הערה…">
+      <select id="filter">
+        <option value="all">הכל</option>
+        <option value="yes">מגיעים</option>
+        <option value="maybe">אולי</option>
+        <option value="no">לא מגיעים</option>
+        <option value="new">חדשים (לא נצפו)</option>
+      </select>
+    </div>
+    <div class="list" id="list"></div>
+  </main>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const LABEL = { yes: 'מגיעים', maybe: 'אולי', no: 'לא מגיעים' };
+  let rows = [];
+
+  const el = (tag, cls, text) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  };
+
+  async function api(path, opts) {
+    const r = await fetch(path, { credentials: 'same-origin', ...opts });
+    if (r.status === 401 && !path.includes('login')) { show(false); throw new Error('unauthorized'); }
+    return r;
+  }
+
+  function show(auth) {
+    $('login').classList.toggle('hidden', auth);
+    $('app').classList.toggle('hidden', !auth);
+  }
+
+  async function load() {
+    const r = await api('/api/admin/rsvps');
+    rows = await r.json();
+    render();
+  }
+
+  function stats() {
+    const s = { yes: 0, maybe: 0, no: 0, guests: 0, maybeGuests: 0, fresh: 0 };
+    rows.forEach(r => {
+      s[r.attending]++;
+      if (r.attending === 'yes') s.guests += r.guests;
+      if (r.attending === 'maybe') s.maybeGuests += r.guests;
+      if (!r.seen) s.fresh++;
+    });
+    const box = $('stats');
+    box.replaceChildren();
+    [['main', s.guests, 'אורחים מאושרים'], ['yes', s.yes, 'משפחות שאישרו'], ['maybe', s.maybe, `אולי (${s.maybeGuests} אורחים)`],
+     ['no', s.no, 'לא מגיעים'], ['', rows.length, 'סה״כ פניות'], ['main', s.fresh, 'חדשות']].forEach(([c, n, l]) => {
+      const d = el('div', 'stat ' + c);
+      d.append(el('b', null, n), el('span', null, l));
+      box.append(d);
+    });
+  }
+
+  function render() {
+    stats();
+    const q = $('q').value.trim().toLowerCase(), f = $('filter').value;
+    const list = $('list');
+    list.replaceChildren();
+    const shown = rows.filter(r =>
+      (f === 'all' || (f === 'new' ? !r.seen : r.attending === f)) &&
+      (!q || (r.name + ' ' + r.phone + ' ' + r.note).toLowerCase().includes(q)));
+    if (!shown.length) { list.append(el('div', 'empty', rows.length ? 'אין תוצאות לסינון' : 'עדיין לא התקבלו אישורי הגעה')); return; }
+
+    shown.forEach(r => {
+      const row = el('div', 'row ' + r.attending);
+      const who = el('div');
+      const n = el('div', 'name', r.name);
+      if (!r.seen) n.append(el('span', 'new', 'חדש'));
+      const when = new Date(r.createdAt).toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' });
+      who.append(n, el('div', 'meta', `${r.phone} · ${when}`));
+
+      const st = el('div');
+      st.append(el('span', 'badge ' + r.attending, LABEL[r.attending]));
+
+      const g = el('div', 'guests', r.attending === 'no' ? '—' : r.guests);
+      g.append(el('small', null, 'אורחים'));
+
+      const acts = el('div', 'acts');
+      const digits = r.phone.replace(/[^\d+]/g, '');
+      const wa = el('a', 'icon', '💬'); wa.title = 'וואטסאפ';
+      wa.href = 'https://wa.me/' + (digits.startsWith('0') ? '972' + digits.slice(1) : digits.replace('+', ''));
+      wa.target = '_blank'; wa.rel = 'noopener';
+      const tel = el('a', 'icon', '📞'); tel.title = 'חיוג'; tel.href = 'tel:' + digits;
+      const seen = el('button', 'icon', r.seen ? '👁️' : '✔️'); seen.title = r.seen ? 'סמן כלא נצפה' : 'סמן כנצפה';
+      seen.onclick = async () => { await api('/api/admin/rsvps/' + r.id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ seen: !r.seen }) }); load(); };
+      const del = el('button', 'icon del', '🗑️'); del.title = 'מחיקה';
+      del.onclick = async () => {
+        if (!confirm(`למחוק את ${r.name}?`)) return;
+        await api('/api/admin/rsvps/' + r.id, { method: 'DELETE' }); load();
+      };
+      acts.append(wa, tel, seen, del);
+
+      row.append(who, st, g, acts);
+      if (r.note) row.append(el('div', 'note', '💬 ' + r.note));
+      list.append(row);
+    });
+  }
+
+  $('loginForm').onsubmit = async e => {
+    e.preventDefault();
+    $('loginErr').textContent = '';
+    const r = await fetch('/api/admin/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: $('pw').value }) });
+    if (!r.ok) { $('loginErr').textContent = (await r.json()).error || 'שגיאה'; return; }
+    $('pw').value = '';
+    show(true); load();
+  };
+  $('logout').onclick = async () => { await fetch('/api/admin/logout', { method: 'POST' }); show(false); };
+  $('refresh').onclick = load;
+  $('q').oninput = render;
+  $('filter').onchange = render;
+
+  fetch('/api/admin/rsvps', { credentials: 'same-origin' }).then(async r => {
+    if (r.ok) { rows = await r.json(); show(true); render(); }
+  });
+  setInterval(() => { if (!$('app').classList.contains('hidden')) load().catch(() => {}); }, 30000);
+})();
+</script>
+</body>
+</html>

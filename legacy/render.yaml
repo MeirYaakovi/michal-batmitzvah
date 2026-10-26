@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: michal-batmitzvah
+    runtime: node
+    plan: starter
+    buildCommand: echo "no build"
+    startCommand: node server.js
+    healthCheckPath: /
+    envVars:
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: DATA_DIR
+        value: /var/data
+    disk:
+      name: rsvp-data
+      mountPath: /var/data
+      sizeGB: 1

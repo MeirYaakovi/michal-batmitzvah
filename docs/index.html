@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>הזמנה לבת המצווה של מיכל</title>
+<meta name="description" content="מוזמנים לחגוג איתנו את בת המצווה של מיכל יעקובי · אור ל־כ״ד בחשון · מסעדת אצה, ביג קסטינה">
+<meta property="og:title" content="הזמנה לבת המצווה של מיכל 💐">
+<meta property="og:description" content="אור ל־כ״ד בחשון · מסעדת אצה, ביג קסטינה · נשמח לראותכם ולקבל אישור הגעה">
+<meta property="og:type" content="website">
+<meta property="og:image" content="photo.jpg">
+<meta name="theme-color" content="#3a1f3d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌸%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="petals" aria-hidden="true"></div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <p class="eyebrow reveal">הזמנה לשמחה</p>
+    <div class="photo-frame reveal">
+      <div class="photo-ring"></div>
+      <img src="photo.jpg" alt="מיכל" onerror="this.onerror=null;this.src='placeholder.svg'">
+    </div>
+    <h1 class="reveal"><span class="small" data-bind="eventTitle">בת מצווה</span><span class="name" data-bind="girlName">מיכל</span></h1>
+    <p class="ornament reveal">❖ ❖ ❖</p>
+    <p class="hero-date reveal"><span data-bind="hebrewDate"></span><br><span class="greg" id="gregDate"></span></p>
+    <a href="#rsvp" class="btn btn-gold reveal">אישור הגעה</a>
+  </div>
+  <a href="#invite" class="scroll-hint" aria-label="גלול למטה">⌄</a>
+</header>
+
+<main>
+  <section id="invite" class="section invite">
+    <div class="container narrow center">
+      <p class="lead reveal" data-bind="welcomeText"></p>
+      <p class="family reveal">משפחת <span data-bind="familyName"></span></p>
+    </div>
+  </section>
+
+  <section class="section countdown-sec">
+    <div class="container center">
+      <h2 class="reveal">עוד מעט חוגגים</h2>
+      <div class="countdown reveal" id="countdown" aria-live="off">
+        <div><b id="cd-d">--</b><span>ימים</span></div>
+        <div><b id="cd-h">--</b><span>שעות</span></div>
+        <div><b id="cd-m">--</b><span>דקות</span></div>
+        <div><b id="cd-s">--</b><span>שניות</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section details">
+    <div class="container">
+      <h2 class="center reveal">פרטי האירוע</h2>
+      <div class="cards">
+        <article class="card reveal">
+          <div class="icon">📅</div>
+          <h3>מתי?</h3>
+          <p><strong data-bind="hebrewDate"></strong></p>
+          <p class="muted" id="gregLong"></p>
+        </article>
+        <article class="card reveal">
+          <div class="icon">🕢</div>
+          <h3>באיזו שעה?</h3>
+          <p>קבלת פנים <strong data-bind="doorsTime"></strong></p>
+          <p class="muted">תחילת האירוע <span data-bind="time"></span></p>
+        </article>
+        <article class="card reveal">
+          <div class="icon">📍</div>
+          <h3>איפה?</h3>
+          <p><strong data-bind="venueName"></strong></p>
+          <p class="muted" data-bind="venuePlace"></p>
+        </article>
+      </div>
+
+      <div class="actions reveal">
+        <a class="btn btn-outline" id="waze" target="_blank" rel="noopener">🚗 נווט עם Waze</a>
+        <a class="btn btn-outline" id="gmaps" target="_blank" rel="noopener">🗺️ Google Maps</a>
+        <a class="btn btn-outline" id="gcal" target="_blank" rel="noopener">➕ הוסף ליומן Google</a>
+        <button class="btn btn-outline" id="ics" type="button">⬇️ קובץ יומן (iPhone / Outlook)</button>
+      </div>
+
+      <div class="map reveal">
+        <iframe id="mapFrame" title="מפה" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section id="rsvp" class="section rsvp">
+    <div class="container narrow">
+      <h2 class="center reveal">אישור הגעה</h2>
+      <p class="center sub reveal">נשמח לדעת מי מגיע — מלאו כמה פרטים קצרים ואנחנו כבר נדאג להכל 💐</p>
+
+      <form id="rsvpForm" class="form reveal" novalidate>
+        <label class="field">
+          <span>שם מלא</span>
+          <input name="name" type="text" autocomplete="name" maxlength="80" required placeholder="למשל: דנה כהן">
+        </label>
+        <label class="field">
+          <span>טלפון</span>
+          <input name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" required placeholder="050-0000000" dir="ltr" style="text-align:right">
+        </label>
+
+        <fieldset class="field choices">
+          <legend>האם תגיעו?</legend>
+          <label class="choice"><input type="radio" name="attending" value="yes" checked><span>🎉 מגיעים בשמחה</span></label>
+          <label class="choice"><input type="radio" name="attending" value="maybe"><span>🤔 עדיין לא בטוחים</span></label>
+          <label class="choice"><input type="radio" name="attending" value="no"><span>😢 לא נוכל להגיע</span></label>
+        </fieldset>
+
+        <div class="field" id="guestsField">
+          <span>כמה אנשים תהיו (כולל אתכם)?</span>
+          <div class="stepper">
+            <button type="button" id="minus" aria-label="פחות">−</button>
+            <input name="guests" id="guests" type="number" min="1" value="1" readonly>
+            <button type="button" id="plus" aria-label="יותר">+</button>
+          </div>
+        </div>
+
+        <label class="field">
+          <span>ברכה / הערה (לא חובה)</span>
+          <textarea name="note" rows="3" maxlength="500" placeholder="מילה טובה למיכל, אלרגיות, בקשות מיוחדות…"></textarea>
+        </label>
+
+        <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <p class="error" id="formError" role="alert"></p>
+        <button class="btn btn-gold btn-block" id="submitBtn" type="submit">שליחת אישור הגעה</button>
+      </form>
+
+      <div class="thanks" id="thanks" hidden>
+        <div class="check">✓</div>
+        <h3 id="thanksTitle">תודה רבה!</h3>
+        <p id="thanksText"></p>
+        <button class="btn btn-outline" id="againBtn" type="button">שליחת אישור נוסף</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <p class="ornament">❖</p>
+  <p>מחכים לכם בהתרגשות · משפחת <span data-bind="familyName"></span></p>
+  <p class="contact" id="contact"></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
